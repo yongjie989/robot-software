@@ -129,6 +129,12 @@ void uwb_initiate_measurement(uwb_protocol_handler_t* handler,
                               uint8_t* buffer,
                               uint16_t anchor_addr);
 
+/** Parses a comma separated list of anchors and returns the number of parsed addresses.
+ *
+ * @caution The str parameter will be modified in place by calling this function.
+ * */
+int uwb_mac_addr_list_parse(char* str, uint16_t* out, int max_count);
+
 /** @group UWB Board specific API
  *
  * @brief Those functions must be provided on a per-board basis to interface
@@ -146,6 +152,7 @@ extern void uwb_transmit_frame(uint64_t tx_timestamp, uint8_t* frame, size_t fra
 
 /** Reads the current value of the UWB module clock. */
 extern uint64_t uwb_timestamp_get(void);
+
 
 /** @} */
 

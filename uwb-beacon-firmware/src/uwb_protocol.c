@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdlib.h>
 #include "uwb_protocol.h"
 #include <trace/trace.h>
 #include "trace_points.h"
@@ -368,3 +369,34 @@ void uwb_initiate_measurement(uwb_protocol_handler_t* handler, uint8_t* buffer, 
 
     uwb_transmit_frame(ts, buffer, size);
 }
+
+int uwb_mac_addr_list_parse(char* str, uint16_t* out, int max_count)
+{
+    char* ctx;
+    char* token;
+    int i = 0;
+
+    token = strtok_r(str, ",", &ctx);
+
+    while (token != NULL) {
+        int value = atoi(token);
+
+        /* A value of 0 is not a valid MAC, and indicates a conversion error. */
+        if (value == 0) {
+            return -1;
+        }
+
+        out[i]  = value;
+
+        token = strtok_r(NULL, ",", &ctx);
+        i ++;
+
+        /* If we have too many items to parse, we fail. */
+        if (i >= max_count) {
+            return -2;
+        }
+    }
+
+    return i;
+}
+

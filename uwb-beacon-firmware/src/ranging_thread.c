@@ -5,6 +5,8 @@
 #include "decadriver/deca_device_api.h"
 #include "decadriver/deca_regs.h"
 
+#include <error/error.h>
+
 #include "main.h"
 #include "decawave_interface.h"
 #include "ranging_thread.h"
@@ -156,9 +158,14 @@ static void ranging_thread(void* p)
 
     static uint8_t frame[1024];
 
+    char anchors_param[] = "15,9";
+    uint16_t anchor_macs[10];
     int current_anchor_mac_index = 0;
-    uint16_t anchor_macs[] = {7, 10, 11, 14};
-    int nb_anchor_macs = sizeof(anchor_macs) / sizeof(anchor_macs[0]);
+    int nb_anchor_macs = uwb_mac_addr_list_parse(anchors_param, anchor_macs, 10);
+
+    if (nb_anchor_macs < 0) {
+        WARNING("Could not parse anchor MAC addrs \"%s\"", anchors_param);
+    }
 
     while (1) {
         /* Wait for an interrupt coming from the UWB module. */
@@ -178,6 +185,9 @@ static void ranging_thread(void* p)
                 trace(TRACE_POINT_UWB_SEND_ADVERTISEMENT);
                 /* First disable transceiver */
                 dwt_forcetrxoff();
+                if (nb_anchor_macs <= 0) {
+                    ERROR("Need at least 1 anchor to initiate.");
+                }
 
                 /* Initiate measurement sequence */
                 uwb_initiate_measurement(&handler, frame, anchor_macs[current_anchor_mac_index]);

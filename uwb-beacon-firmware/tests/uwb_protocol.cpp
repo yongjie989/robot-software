@@ -587,3 +587,42 @@ TEST(DataPacket, CanReceiveDataPacket)
     mock().expectOneCall("data_rx").withMemoryBufferParameter("data", msg_buf, 6).withIntParameter("src", handler.address).withIntParameter("dst", MAC_802_15_4_BROADCAST_ADDR);
     uwb_process_incoming_frame(&handler, frame, size, 1);
 }
+
+TEST_GROUP(ParseAnchorList)
+{
+    static constexpr int n_anchor = 4;
+    uint16_t anchor_macs[n_anchor];
+};
+
+TEST(ParseAnchorList, CanParseSingleItem)
+{
+    char str[] = "15";
+    auto n = uwb_mac_addr_list_parse(str, anchor_macs, n_anchor);
+    CHECK_EQUAL(1, n);
+    CHECK_EQUAL(15, anchor_macs[0]);
+}
+
+TEST(ParseAnchorList, ParseMultipleItems)
+{
+    char str[] = "1,2,3";
+    auto n = uwb_mac_addr_list_parse(str, anchor_macs, n_anchor);
+    CHECK_EQUAL(3, n);
+
+    CHECK_EQUAL(1, anchor_macs[0]);
+    CHECK_EQUAL(2, anchor_macs[1]);
+    CHECK_EQUAL(3, anchor_macs[2]);
+}
+
+TEST(ParseAnchorList, ParseWrongItems)
+{
+    char str[] = "foobar";
+    auto n = uwb_mac_addr_list_parse(str, anchor_macs, n_anchor);
+    CHECK_EQUAL(-1, n); // -1 indicates invalid string
+}
+
+TEST(ParseAnchorList, ParseTooManyItems)
+{
+    char str[] = "1,2,3,4,5";
+    auto n = uwb_mac_addr_list_parse(str, anchor_macs, n_anchor);
+    CHECK_EQUAL(-2, n); // -2 is too many items
+}
