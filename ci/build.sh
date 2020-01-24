@@ -62,6 +62,15 @@ case $BUILD_TYPE in
         make
         popd
         ;;
+
+    computer-vision)
+        mkdir -p computer-vision/build
+        pushd computer-vision/build
+        cmake ..
+        make all
+        popd
+        ;;
+
     *)
         echo "Unknown build type $BUILD_TYPE"
         exit 1

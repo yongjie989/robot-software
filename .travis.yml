@@ -8,6 +8,7 @@ addons:
             - python-pip
             - python-virtualenv
             - protobuf-compiler
+            - libopencv-dev
 
 language: cpp
 
@@ -25,6 +26,8 @@ matrix:
           env: BUILD_TYPE="build" PLATFORM="proximity-beacon-firmware"
         - compiler: gcc
           env: BUILD_TYPE="build" PLATFORM="uwb-beacon-firmware"
+        - compiler: gcc
+          env: BUILD_TYPE="computer-vision"
 
 before_install:
     - git submodule update --init --recursive
