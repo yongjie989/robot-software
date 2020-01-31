@@ -8,6 +8,7 @@ addons:
             - python-pip
             - python-virtualenv
             - protobuf-compiler
+            - libprotobuf-dev
             - libopencv-dev
 
 language: cpp
