@@ -54,6 +54,7 @@ target.arm:
     - src/trace/trace_points.c
     - src/trace/trace_port.c
     - src/strategy.cpp
+    - src/strategy/actions_impl.cpp
     - src/filesystem.c
     - src/http/server.c
     - src/control_panel.c
