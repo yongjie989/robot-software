@@ -10,7 +10,7 @@ static void mpr_select(void* arg)
         NULL,
         GPIOA,
         GPIOA_CS1,
-        SPI_CR1_BR_2 | SPI_CR1_BR_1,
+        SPI_CR1_BR_2 | SPI_CR1_BR_1 | SPI_CR1_BR_0,
         SPI_CR2_DS_2 | SPI_CR2_DS_1 | SPI_CR2_DS_0};
 
     spiAcquireBus(&SPID3);
@@ -25,6 +25,7 @@ static void mpr_select(void* arg)
 
 static void mpr_unselect(void* arg)
 {
+    (void)arg;
     spiUnselect(&SPID3);
     spiReleaseBus(&SPID3);
 }
